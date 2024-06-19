@@ -30,7 +30,7 @@ make build-jar
 
 The general usage of the library is the same for both Python and Java. The only difference is the syntax.
 
-### Creating and accessing a database
+### Creating and accessing a database
 
 ```python
 from JSONdb import JSONdb
