@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class Demo {
     public static void main(String[] args) {
-        JSONdb db = new JSONdb("products.json", true, true);
+        JSONdb db = new JSONdb("products.json", true, true, true);
         db.init("Products", "A demo database for products");
         db.createColumn("product", "STRING", "The name of the product");
         db.createColumn("price", "FLOAT", "The price of the product");
