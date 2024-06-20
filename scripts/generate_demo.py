@@ -9,6 +9,10 @@ try:
 except ImportError:
     print("JSONdb module not found. Please install JSONdb module before running this script.")
 
+import os
+if os.path.exists("demo.json"):
+    os.remove("demo.json")
+
 db = JSONdb("demo.json")
 
 db.init("Products", "A demo database for products")

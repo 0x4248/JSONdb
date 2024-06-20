@@ -26,7 +26,12 @@ def main():
         data = db.content["data"]
         numRows = len(data["0"])
         for i in range(numRows):
-            row = [data[column][i] for column in data]
+            row = []
+            for column in data:
+                if i < len(data[column]):
+                    row.append(data[column][i])
+                else:
+                    row.append("")
             f.write(",".join(map(str, row)) + "\n")
             
     print("Database converted to CSV")
