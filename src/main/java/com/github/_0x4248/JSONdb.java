@@ -16,11 +16,13 @@ public class JSONdb {
     private String contentName;
     private JsonObject content;
     private boolean autosave;
+    private boolean autoload;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public JSONdb(String databaseName, boolean autosave, boolean traceLog) {
+    public JSONdb(String databaseName, boolean autosave, boolean autoload, boolean traceLog) {
         this.contentName = databaseName;
         this.autosave = autosave;
+        this.autoload = autoload;
         JSONdb.traceLog = traceLog;
         loadDatabase();
     }
@@ -67,6 +69,9 @@ public class JSONdb {
     }
 
     public int createColumn(String name, String type, String description) {
+        if (autoload) {
+            loadDatabase();
+        }
         JsonObject columns = content.getAsJsonObject("meta").getAsJsonObject("columns");
         int columnId = columns.entrySet().size();
         JsonObject column = new JsonObject();
@@ -82,6 +87,9 @@ public class JSONdb {
     }
 
     public void insert(int columnId, Object data) {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Inserting data into column " + columnId);
         String columnIdStr = String.valueOf(columnId);
         JsonObject column = content.getAsJsonObject("meta").getAsJsonObject("columns").getAsJsonObject(columnIdStr);
@@ -114,6 +122,9 @@ public class JSONdb {
     }
 
     public void insertItems(int columnId, List<?> data) {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Inserting data into column " + columnId);
         String columnIdStr = String.valueOf(columnId);
         JsonObject column = content.getAsJsonObject("meta").getAsJsonObject("columns").getAsJsonObject(columnIdStr);
@@ -148,6 +159,9 @@ public class JSONdb {
     }
 
     public void delete(int columnId, int itemId) {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Deleting item " + itemId + " from column " + columnId);
         JsonArray columnData = content.getAsJsonObject("data").getAsJsonArray(String.valueOf(columnId));
         columnData.remove(itemId);
@@ -158,6 +172,9 @@ public class JSONdb {
     }
 
     public void clear(int columnId) {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Clearing column " + columnId);
         content.getAsJsonObject("data").add(String.valueOf(columnId), new JsonArray());
         Logger.log("Column cleared successfully");
@@ -167,21 +184,33 @@ public class JSONdb {
     }
 
     public JsonArray get(int columnId) {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Getting column " + columnId);
         return content.getAsJsonObject("data").getAsJsonArray(String.valueOf(columnId));
     }
 
     public JsonElement getItem(int columnId, int itemId) {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Getting item " + itemId + " from column " + columnId);
         return content.getAsJsonObject("data").getAsJsonArray(String.valueOf(columnId)).get(itemId);
     }
 
     public JsonObject getMeta() {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Getting meta data");
         return content.getAsJsonObject("meta");
     }
 
     public JsonObject getData() {
+        if (autoload) {
+            loadDatabase();
+        }
         Logger.log("Getting data");
         return content.getAsJsonObject("data");
     }

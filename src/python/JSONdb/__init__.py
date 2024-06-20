@@ -29,10 +29,13 @@ class logger:
     
 
 class JSONdb: 
-    def __init__(self, databaseName, autosave=True):
+    def __init__(self, databaseName, autosave=True ,autoload=True, traceLogs=False):
         self.contentName = databaseName
         self.content = None
         self.autosave = autosave
+        self.autoload = autoload
+        global traceLog
+        traceLog = traceLogs
         self.loadDatabase()
 
     def loadDatabase(self):
@@ -43,6 +46,7 @@ class JSONdb:
             logger.log("Database loaded successfully with " + str(len(self.content["meta"]["columns"])) + " columns")
         except FileNotFoundError:
             logger.warn("Database was not found and will need to be initialized before use")
+    
 
     def saveDatabase(self):
         logger.log("Saving database: " + self.contentName)
@@ -65,6 +69,8 @@ class JSONdb:
             self.saveDatabase()
 
     def createColumn(self, name, type="STRING", description=""):
+        if self.autoload:
+            self.loadDatabase()
         columnId = len(self.content["meta"]["columns"])
         self.content["meta"]["columns"][str(columnId)] = {
             "name": name,
@@ -78,6 +84,8 @@ class JSONdb:
 
     def insert(self, columnId, data):
         logger.log("Inserting data into column " + str(columnId))
+        if self.autoload:
+            self.loadDatabase()
         if self.content["meta"]["columns"][str(columnId)]["type"] == "INTEGER":
             try:
                 data = int(data)
@@ -109,6 +117,8 @@ class JSONdb:
 
     def insertItems(self, columnId, data):
         logger.log("Inserting data into column " + str(columnId))
+        if self.autoload:
+            self.loadDatabase()
         for i in range(len(data)):
             if self.content["meta"]["columns"][str(columnId)]["type"] == "INTEGER":
                 try:
@@ -154,16 +164,24 @@ class JSONdb:
 
     def get(self, columnId):
         logger.log("Getting column " + str(columnId))
+        if self.autoload:
+            self.loadDatabase()
         return self.content["data"][str(columnId)]
 
     def getItem(self, columnId, itemId):
         logger.log("Getting item " + str(itemId) + " from column " + str(columnId))
+        if self.autoload:
+            self.loadDatabase()
         return self.content["data"][str(columnId)][itemId]
 
     def getMeta(self):
         logger.log("Getting meta data")
+        if self.autoload:
+            self.loadDatabase()
         return self.content["meta"]
 
     def getData(self):
         logger.log("Getting data")
+        if self.autoload:
+            self.loadDatabase()
         return self.content["data"]

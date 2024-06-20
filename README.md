@@ -54,6 +54,22 @@ You can manually save the database with the following command:
 db.saveDatabase()
 ```
 
+### Autoload
+
+Autoload loads the database file before each operation. This is useful if you are working with multiple instances of the database file.
+
+```python
+db = JSONdb("database.json", autoload=True)
+```
+
+### Tracelogs
+
+Tracelogs are used to log the operations performed on the database. This is useful for debugging purposes.
+
+```python
+db = JSONdb("database.json", traceLogs=True)
+```
+
 ### Initializing a table
 
 If the database is empty then you can initialize a table with the following command:
